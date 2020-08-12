@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import TodoForm from "./TodoForm.js";
+import TodoList from "./TodoList.js";
+import TodoFilter from "./TodoFilter.js";
 import uuid from "react-uuid";
 import "./App.css";
 
@@ -49,60 +52,17 @@ function App() {
     setTodos(newTodos);
   };
 
-  const showAll = todos.map((todo) => (
-    <div key={todo.id}>
-      <label>
-        <input
-          type="checkbox"
-          checked={todo.done}
-          onChange={() => handleChecked(todo.id)}
-        />
-        {todo.task}
-      </label>
-      <button onClick={() => removeTodo(todo.id)}>Remove</button>
-    </div>
-  ));
-
-  const showDone = todos
-    .filter((todo) => todo.done)
-    .map((todo) => (
-      <div key={todo.id}>
-        <label>
-          <input
-            type="checkbox"
-            checked={todo.done}
-            onChange={() => handleChecked(todo.id)}
-          />
-          {todo.task}
-        </label>
-        <button onClick={() => removeTodo(todo.id)}>Remove</button>
-      </div>
-    ));
-
-  const showTodo = todos
-    .filter((todo) => !todo.done)
-    .map((todo) => (
-      <div key={todo.id}>
-        <label>
-          <input
-            type="checkbox"
-            checked={todo.done}
-            onChange={() => handleChecked(todo.id)}
-          />
-          {todo.task}
-        </label>
-        <button onClick={() => removeTodo(todo.id)}>Remove</button>
-      </div>
-    ));
+  const doneTodos = todos.filter((todo) => todo.done);
+  const todoTodos = todos.filter((todo) => !todo.done);
 
   const getFilteredList = () => {
     switch (filter) {
       case "all":
-        return showAll;
+        return todos;
       case "done":
-        return showDone;
+        return doneTodos;
       case "todo":
-        return showTodo;
+        return todoTodos;
       default:
         break;
     }
@@ -111,23 +71,21 @@ function App() {
   return (
     <div className="App">
       <h1>My Todo List</h1>
-      <form onSubmit={submitForm}>
-        <input
-          type="text"
-          placeholder="add a todo"
-          value={value}
-          onChange={onChange}
-        />
-        <input type="submit" value="add" />
-      </form>
-      {getFilteredList()}
-      <button onClick={() => setFilter("all")}>All ({showAll.length})</button>
-      <button onClick={() => setFilter("done")}>
-        Done ({showDone.length})
-      </button>
-      <button onClick={() => setFilter("todo")}>
-        Todo ({showTodo.length})
-      </button>
+      <TodoForm submitForm={submitForm} value={value} onChange={onChange} />
+
+      <TodoList
+        todoList={getFilteredList()}
+        removeTodo={removeTodo}
+        handleChecked={handleChecked}
+        setFilter={setFilter}
+      />
+
+      <TodoFilter
+        setFilter={setFilter}
+        todos={todos}
+        doneTodos={doneTodos}
+        todoTodos={todoTodos}
+      />
     </div>
   );
 }
