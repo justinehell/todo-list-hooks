@@ -22,9 +22,31 @@ function App() {
   ];
 
   const [todos, setTodos] = useState(initialList);
+  const [value, setValue] = useState("");
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    setTodos([...todos, { task: value, done: false, id: uuid() }]);
+    setValue("");
+  };
+
+  const onChange = (e) => {
+    setValue(e.target.value);
+  };
 
   return (
     <div className="App">
+      <h1>My Todo List</h1>
+      <form onSubmit={submitForm}>
+        <input
+          type="text"
+          placeholder="add a todo"
+          value={value}
+          onChange={onChange}
+        />
+        <input type="submit" value="add" />
+      </form>
+
       {todos.map((todo) => (
         <div key={todo.id}>{todo.task}</div>
       ))}
