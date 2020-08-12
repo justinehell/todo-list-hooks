@@ -23,6 +23,7 @@ function App() {
 
   const [todos, setTodos] = useState(initialList);
   const [value, setValue] = useState("");
+  const [filter, setFilter] = useState("all");
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -48,6 +49,65 @@ function App() {
     setTodos(newTodos);
   };
 
+  const showAll = todos.map((todo) => (
+    <div key={todo.id}>
+      <label>
+        <input
+          type="checkbox"
+          checked={todo.done}
+          onChange={() => handleChecked(todo.id)}
+        />
+        {todo.task}
+      </label>
+      <button onClick={() => removeTodo(todo.id)}>Remove</button>
+    </div>
+  ));
+
+  const showDone = todos
+    .filter((todo) => todo.done)
+    .map((todo) => (
+      <div key={todo.id}>
+        <label>
+          <input
+            type="checkbox"
+            checked={todo.done}
+            onChange={() => handleChecked(todo.id)}
+          />
+          {todo.task}
+        </label>
+        <button onClick={() => removeTodo(todo.id)}>Remove</button>
+      </div>
+    ));
+
+  const showTodo = todos
+    .filter((todo) => !todo.done)
+    .map((todo) => (
+      <div key={todo.id}>
+        <label>
+          <input
+            type="checkbox"
+            checked={todo.done}
+            onChange={() => handleChecked(todo.id)}
+          />
+          {todo.task}
+        </label>
+        <button onClick={() => removeTodo(todo.id)}>Remove</button>
+      </div>
+    ));
+
+  const getFilteredList = () => {
+    switch (filter) {
+      case "all":
+        return showAll;
+      case "done":
+        return showDone;
+      case "todo":
+        return showTodo;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="App">
       <h1>My Todo List</h1>
@@ -60,20 +120,14 @@ function App() {
         />
         <input type="submit" value="add" />
       </form>
-
-      {todos.map((todo) => (
-        <div key={todo.id}>
-          <label>
-            <input
-              type="checkbox"
-              checked={todo.done}
-              onChange={() => handleChecked(todo.id)}
-            />
-            {todo.task}
-          </label>
-          <button onClick={() => removeTodo(todo.id)}>Remove</button>
-        </div>
-      ))}
+      {getFilteredList()}
+      <button onClick={() => setFilter("all")}>All ({showAll.length})</button>
+      <button onClick={() => setFilter("done")}>
+        Done ({showDone.length})
+      </button>
+      <button onClick={() => setFilter("todo")}>
+        Todo ({showTodo.length})
+      </button>
     </div>
   );
 }
