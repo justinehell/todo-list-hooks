@@ -34,6 +34,13 @@ function App() {
     setValue(e.target.value);
   };
 
+  const removeTodo = (id) => {
+    const newTodos = [...todos];
+    const index = newTodos.findIndex((todo) => todo.id === id);
+    newTodos.splice(index, 1);
+    setTodos(newTodos);
+  };
+
   return (
     <div className="App">
       <h1>My Todo List</h1>
@@ -48,7 +55,10 @@ function App() {
       </form>
 
       {todos.map((todo) => (
-        <div key={todo.id}>{todo.task}</div>
+        <div key={todo.id}>
+          <p>{todo.task}</p>
+          <button onClick={() => removeTodo(todo.id)}>Remove</button>
+        </div>
       ))}
     </div>
   );
