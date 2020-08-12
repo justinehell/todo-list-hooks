@@ -41,6 +41,13 @@ function App() {
     setTodos(newTodos);
   };
 
+  const handleChecked = (id) => {
+    const newTodos = [...todos];
+    const index = newTodos.findIndex((todo) => todo.id === id);
+    newTodos[index].done = !newTodos[index].done;
+    setTodos(newTodos);
+  };
+
   return (
     <div className="App">
       <h1>My Todo List</h1>
@@ -56,7 +63,14 @@ function App() {
 
       {todos.map((todo) => (
         <div key={todo.id}>
-          <p>{todo.task}</p>
+          <label>
+            <input
+              type="checkbox"
+              checked={todo.done}
+              onChange={() => handleChecked(todo.id)}
+            />
+            {todo.task}
+          </label>
           <button onClick={() => removeTodo(todo.id)}>Remove</button>
         </div>
       ))}
